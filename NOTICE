@@ -1,0 +1,37 @@
+WAVES - third-party material notice
+
+Code (scripts/, evaluation/, reproduction/, tests/) is licensed under the MIT
+License (LICENSE-CODE).
+
+The annotations in data/ (labels, reference decisions, helper candidates,
+inventories, metrics, manifests) are licensed under CC BY 4.0 (LICENSE-DATA).
+
+The files under workflows/real/ are unmodified snapshots of GitHub Actions
+workflow files taken from public GitHub repositories. They are NOT covered by
+the licenses above. Each file remains the property of its original authors and
+is subject to the license of the repository it came from. They are included
+for research and benchmarking purposes, so that the labels in data/ stay
+verifiable even after upstream files change or disappear.
+
+Provenance of every snapshot is recorded in data/workflows.csv:
+  repository, workflow_path, commit_sha, workflow_blob_url   where it came from
+  license                                                    SPDX id reported by
+                                                             the GitHub API for
+                                                             the repository
+                                                             ("NOASSERTION" if a
+                                                             license file is not
+                                                             recognized, "none"
+                                                             if the repository
+                                                             has no license file,
+                                                             "unavailable" if the
+                                                             repository could not
+                                                             be queried, e.g.
+                                                             deleted)
+  retrieval_date, file_sha256                                when and what we kept
+
+The files under workflows/synthetic/ were generated with an LLM and manually
+reviewed (see docs/methodology.md). They are released under CC BY 4.0.
+
+If you are a rights holder and want a snapshot removed, open an issue or contact
+the maintainers; the corresponding row will be marked "removed" in
+data/workflows.csv and the file deleted in the next release.

@@ -51,12 +51,6 @@ The field definitions are in [docs/data_dictionary.md](docs/data_dictionary.md).
 
 See [docs/limitations.md](docs/limitations.md).
 
-## Related repositories
-
-The labeling workspace lives in the company repository
-[`boost-internship/gha-dataset`](https://github.com/boost-internship/gha-dataset). This repository is the reference
-for the released data.
-
 ## Citation and licenses
 
 See [CITATION.cff](CITATION.cff). Code: MIT ([LICENSE-CODE](LICENSE-CODE)). Data and annotations: CC BY 4.0

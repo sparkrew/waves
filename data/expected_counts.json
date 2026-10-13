@@ -1,0 +1,44 @@
+{
+  "workflows": 475,
+  "real_world_workflows": 465,
+  "synthetic_workflows": 10,
+  "workflows_with_labels": 467,
+  "all_negative_workflows": 8,
+  "labels": 2424,
+  "labels_by_weakness": {
+    "AIW": 19,
+    "CFW": 10,
+    "EPW": 383,
+    "GRCW": 312,
+    "HGW": 138,
+    "IW": 57,
+    "KVCW": 108,
+    "PTW": 74,
+    "SEW": 261,
+    "UDW": 1062
+  },
+  "subsets": {
+    "helper_reviewed": 365,
+    "reference": 100,
+    "synthetic": 10
+  },
+  "reference_decisions": 445,
+  "helper_candidates": 2136,
+  "helper_candidates_accepted": 1969,
+  "helper_candidates_rejected": 167,
+  "statistics": {
+    "workflows": 475,
+    "with_labels": 467,
+    "all_negative": 8,
+    "labels": 2424,
+    "mean_labels_per_workflow": 5.1,
+    "median": 4.0,
+    "q1": 2.0,
+    "q3": 7.0,
+    "max": 27,
+    "multi_category_workflows": 390,
+    "mean_categories_per_labeled_workflow": 2.81,
+    "helper_candidates": 2136,
+    "helper_retained": 1969
+  }
+}

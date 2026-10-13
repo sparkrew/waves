@@ -1,0 +1,9 @@
+source_id,title,url,accessed,used_for
+github-node12-removal,GitHub Actions: Removal of Node.js 12 from the Actions Runner,https://github.blog/changelog/2023-07-16-github-actions-removal-of-node12-from-the-actions-runner/,2026-09-28,GRCW
+github-set-output,GitHub Actions: Update on save-state and set-output Commands,https://github.blog/changelog/2023-07-24-github-actions-update-on-save-state-and-set-output-commands/,2026-09-28,GRCW
+github-node20-default,GitHub Actions: All Actions Will Run on Node.js 20 Instead of Node.js 16 by Default,https://github.blog/changelog/2024-03-06-github-actions-all-actions-will-run-on-node20-instead-of-node16-by-default/,2026-09-28,GRCW
+github-node20-deprecation,Deprecation of Node.js 20 on GitHub Actions Runners,https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/,2026-09-28,GRCW
+github-action-metadata,Metadata Syntax Reference for GitHub Actions,https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax,2026-09-28,GRCW
+github-global-advisories,REST API Endpoints for Global Security Advisories,https://docs.github.com/en/rest/security-advisories/global-advisories,2026-09-28,KVCW
+github-repository-advisories,REST API Endpoints for Repository Security Advisories,https://docs.github.com/en/rest/security-advisories/repository-advisories,2026-09-28,KVCW
+fares-2026,Unpacking Security Scanners for GitHub Actions Workflows (weakness classification),https://arxiv.org/abs/2601.14455,2026-09-28,classification

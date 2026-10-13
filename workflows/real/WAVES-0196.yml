@@ -1,0 +1,42 @@
+name: Push Multiarch Images
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push-arch-specifics:
+    name: Build Rocks and Push Arch Specific Images
+    uses: canonical/k8s-workflows/.github/workflows/build_rocks.yaml@main
+    with:
+      owner: ${{ github.repository_owner }}
+      trivy-image-config: "trivy.yaml"
+      multiarch-awareness: true
+      cache-action: ${{ (github.event_name == 'push') && 'save' || 'restore' }}
+      # pinning to use rockcraft 1.3.0 feature `entrypoint-service`
+      rockcraft-revisions: '{"amd64": "1783", "arm64": "1784"}'
+      arch-skipping-maximize-build-space: '["arm64"]'
+      platform-labels: '{"arm64": ["self-hosted", "Linux", "ARM64", "jammy"]}'
+  run-tests:
+    uses: canonical/k8s-workflows/.github/workflows/run_tests.yaml@main
+    needs: [build-and-push-arch-specifics]
+    secrets: inherit
+    with:
+      rock-metas: ${{ needs.build-and-push-arch-specifics.outputs.rock-metas }}
+  scan-images:
+    uses: canonical/k8s-workflows/.github/workflows/scan_images.yaml@main
+    needs: [build-and-push-arch-specifics]
+    secrets: inherit
+    with:
+      upload-result: ${{ github.event_name == 'push' }}
+      images: ${{ needs.build-and-push-arch-specifics.outputs.images }}
+      trivy-image-config: ./trivy.yaml
+  build-and-push-multiarch-manifest:
+    name: Combine Rocks and Push Multiarch Manifest
+    uses: canonical/k8s-workflows/.github/workflows/assemble_multiarch_image.yaml@main
+    needs: [build-and-push-arch-specifics]
+    if: ${{ needs.build-and-push-arch-specifics.outputs.changed-rock-metas != '[]' }}
+    with:
+      rock-metas: ${{ needs.build-and-push-arch-specifics.outputs.changed-rock-metas }}
+      dry-run: ${{ github.event_name != 'push' }}

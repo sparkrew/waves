@@ -1,0 +1,34 @@
+# VULNERABLE (CFW-03): Only PART of the multi-line condition is wrapped in
+# ${{ }}; trailing text sits outside the expression delimiters.
+#
+# Example of the exact anti-pattern: the author intended the whole boolean
+# check to be evaluated, but a trailing clause was appended after the closing
+# `}}` by mistake during a merge/rebase. GitHub Actions evaluates the inner
+# ${{ ... }} expression first, converts the boolean result to the string
+# "true"/"false", and then CONCATENATES it with the trailing literal text
+# that sits outside the delimiters. The final `if:` value becomes a
+# non-empty string no matter what ("false and manual override" is still
+# non-empty), so the job always runs.
+name: CFW-03 Partial Expression Wrap
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+    # VULNERABLE: the boolean expression is closed with `}}` after the first
+    # comparison, but a second, unwrapped clause trails after it. The
+    # trailing text is plain YAML string content, not part of the expression,
+    # so it always gets appended to whatever "true"/"false" the expression
+    # evaluated to -- producing a non-empty string in all cases.
+    if: >
+      ${{ github.ref == 'refs/heads/main' }}
+      or manual override requested
+    steps:
+      - name: Terraform apply against production
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

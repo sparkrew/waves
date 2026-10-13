@@ -1,0 +1,95 @@
+---
+name: Check 🛠
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Audit Dependencies 🕵️‍♂️
+    uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
+  r-cmd:
+    name: R CMD Check 🧬
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      additional-env-vars: |
+        _R_CHECK_CRAN_INCOMING_REMOTE_=false
+      additional-r-cmd-check-params: --as-cran
+  r-cmd-non-cran:
+    name: R CMD Check (non-CRAN) 🧬
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      additional-env-vars: |
+        NOT_CRAN=true
+      concurrency-group: non-cran
+      unit-test-report-directory: unit-test-report-non-cran
+  coverage:
+    name: Coverage 📔
+    uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      additional-env-vars: |
+        NOT_CRAN=true
+  linter:
+    if: github.event_name != 'push'
+    name: SuperLinter 🦸‍♀️
+    uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
+  roxygen:
+    name: Roxygen 🅾
+    uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      auto-update: true
+  gitleaks:
+    name: gitleaks 💧
+    uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
+  spelling:
+    name: Spell Check 🆎
+    uses: insightsengineering/r.pkg.template/.github/workflows/spelling.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+  links:
+    if: github.event_name != 'push'
+    name: Check URLs 🌐
+    uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
+  vbump:
+    name: Version Bump 🤜🤛
+    if: github.event_name == 'push'
+    uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+  version:
+    name: Version Check 🏁
+    uses: insightsengineering/r.pkg.template/.github/workflows/version.yaml@main
+  licenses:
+    name: License Check 🃏
+    uses: insightsengineering/r.pkg.template/.github/workflows/licenses.yaml@main
+  style:
+    if: github.event_name != 'push'
+    name: Style Check 👗
+    uses: insightsengineering/r.pkg.template/.github/workflows/style.yaml@main
+    with:
+      auto-update: true
+    secrets:
+      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+  grammar:
+    if: github.event_name != 'push'
+    name: Grammar Check 🔤
+    uses: insightsengineering/r.pkg.template/.github/workflows/grammar.yaml@main

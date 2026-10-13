@@ -1,0 +1,34 @@
+# VULNERABLE (CFW-09): Multi-clause release gate (branch + actor association +
+# not-a-fork) collapsed by a folded scalar.
+#
+# This mirrors a realistic "release automation" condition that combines
+# several checks: (1) the ref must be a release branch, (2) the actor must be
+# an organization member, and (3) the PR (if any) must not originate from a
+# fork. Each individual clause looks like solid defense-in-depth, but because
+# the entire multi-line block uses `>` folding with the `${{ }}` delimiters
+# spanning the fold points, GitHub Actions ends up evaluating this as string
+# data rather than as a boolean AND-chain, and the job runs unconditionally.
+name: CFW-09 Release Branch Multi-Clause Gate
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  cut-release:
+    runs-on: ubuntu-latest
+    # VULNERABLE: three-clause AND-chain wrapped in a folded scalar. Intended
+    # to require: release branch AND org-member actor AND same-repo PR. After
+    # folding, this becomes a non-empty string and always evaluates truthy.
+    if: >
+      ${{ startsWith(github.event.pull_request.base.ref, 'release/') &&
+      github.event.pull_request.author_association == 'MEMBER' &&
+      github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Tag and publish release
+        run: ./scripts/cut-release.sh
+        env:
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}

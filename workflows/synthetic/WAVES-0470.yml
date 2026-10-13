@@ -1,0 +1,27 @@
+# VULNERABLE (CFW-05): Folded-scalar condition gating a reusable workflow call
+# that inherits secrets.
+#
+# `secrets: inherit` passes every secret available to the caller into the
+# called reusable workflow. The `if:` here is meant to restrict that call to
+# same-repository, tag-triggered releases only. The folded scalar breaks the
+# check the same way as CFW-01, so the release workflow (and its inherited
+# secrets) runs unconditionally on every push, not only tag pushes on the
+# origin repo.
+name: CFW-05 Reusable Workflow Secret Gate
+on:
+  push:
+    branches: ["**"]
+    tags: ["**"]
+
+jobs:
+  call-release:
+    # VULNERABLE: folded scalar (`>`) across the tag-check expression.
+    # Intended meaning: only call the release workflow (which inherits ALL
+    # secrets) when this run is a tag push on the canonical repo. After
+    # folding, the value passed to `if:` is a non-empty string, so the call
+    # always fires.
+    if: >
+      ${{ startsWith(github.ref, 'refs/tags/') &&
+      github.repository == 'myorg/myrepo' }}
+    uses: ./.github/workflows/release-publish.yml
+    secrets: inherit

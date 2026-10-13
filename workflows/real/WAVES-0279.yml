@@ -1,0 +1,108 @@
+name: CRA
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/cra.yaml"
+      - ".github/workflows/cra-tests.yaml"
+      - "components/compass-runtime-agent/**"
+      - "!components/compass-runtime-agent/**.md"
+      - "!components/compass-runtime-agent/hack/boilerplate.go.txt"
+      - "tests/**"
+      - "!tests/**.md"
+      - "!tests/Dockerfile.*"
+      - "tests/Dockerfile.compass-runtime-agent"
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".github/workflows/cra.yaml"
+      - ".github/workflows/cra-tests.yaml"
+      - "components/compass-runtime-agent/**"
+      - "!components/compass-runtime-agent/**.md"
+      - "!components/compass-runtime-agent/hack/boilerplate.go.txt"
+      - "tests/**"
+      - "!tests/**.md"
+      - "!tests/Dockerfile.*"
+      - "tests/Dockerfile.compass-runtime-agent"
+
+permissions:
+  id-token: write # This is required for requesting the JWT token
+  contents: read # This is required for actions/checkout
+
+jobs:
+  setup-and-test:
+    uses: ./.github/workflows/cra-tests.yaml
+    secrets:
+      COMPASS_HOST: ${{ secrets.COMPASS_HOST }}
+      COMPASS_CLIENT_ID: ${{ secrets.COMPASS_CLIENT_ID }}
+      COMPASS_CLIENT_SECRET: ${{ secrets.COMPASS_CLIENT_SECRET }}
+
+  tags:
+    runs-on: ubuntu-latest
+    outputs:
+      latest: ${{ steps.latest.outputs.latest || '' }}
+    steps:
+      - id: latest
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name == 'push'
+        run: echo "latest=latest" >> $GITHUB_OUTPUT
+
+  k3d-PR-integration:
+    # we're using reusable because we can't modify workflows as contributors
+    # it could cause the secret leakeages
+    uses: "./.github/workflows/reusable-k3d-agent-test.yaml"
+    needs: build-image
+    if: needs.build-image.result == 'success'
+    with:
+      k3d-version: v5.8.3
+      cra-image: ${{ fromJSON(needs.build-image.outputs.images)[0] }}
+      artifact-prefix: "pr-"
+    secrets:
+      compass-host: ${{ secrets.COMPASS_HOST }}
+      compass-client-id: ${{ secrets.COMPASS_CLIENT_ID }}
+      compass-client-secret: ${{ secrets.COMPASS_CLIENT_SECRET }}
+
+  build-test-image:
+    needs: setup-and-test
+    if: needs.setup-and-test.outputs.test == 'true'
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: compass-runtime-agent-test
+      dockerfile: Dockerfile.compass-runtime-agent
+      context: tests
+
+  build-image:
+    needs: [setup-and-test, tags]
+    if: needs.setup-and-test.outputs.cra == 'true'
+    uses: kyma-project/test-infra/.github/workflows/image-builder.yml@main
+    with:
+      name: compass-runtime-agent
+      dockerfile: Dockerfile
+      context: components/compass-runtime-agent
+      tags: |
+        ${{ needs.tags.outputs.latest }}
+
+  print-images:
+    runs-on: ubuntu-latest
+
+    # if any of the build jobs succeeded - run this job
+    needs: [build-image, build-test-image]
+    if: always() && contains(needs.*.result, 'success')
+
+    steps:
+      - name: "Generate summary"
+        run: |
+          {
+            echo '## CRA Images'
+            printf '\n```json\n'
+            if [ "${{ needs.build-image.result }}" == "success" ]; then
+              echo '${{ needs.build-image.outputs.images }}' | jq
+            fi
+
+            if [ "${{ needs.build-test-image.result }}" == "success" ]; then
+              echo '${{ needs.build-test-image.outputs.images }}' | jq
+            fi
+
+            printf '\n```\n'
+          } >> $GITHUB_STEP_SUMMARY

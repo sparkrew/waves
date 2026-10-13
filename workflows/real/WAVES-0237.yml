@@ -1,0 +1,23 @@
+name: Unit tests & PHPCS
+
+on:
+  push:
+
+jobs:
+  test-and-code-style:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        php: [8.1]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: composer install --prefer-dist
+
+      - name: Run tests
+        run: vendor/bin/phpunit --bootstrap __tests__/bootstrap.php __tests__
+
+      - name: Run PHPCS
+        run: vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=vendor/ .

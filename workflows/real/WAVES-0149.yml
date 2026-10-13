@@ -1,0 +1,7 @@
+name: Maven Compile
+on: push
+jobs:
+  compile:
+    uses: RegioneER/parer-github-template/.github/workflows/compile.yml@v1
+    with:
+      java: '11'

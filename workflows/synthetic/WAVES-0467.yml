@@ -1,0 +1,35 @@
+# VULNERABLE (CFW-02): Literal block scalar (`|`) instead of folded (`>`).
+#
+# `|` preserves newlines exactly (rather than folding them to spaces). When
+# used for an `if:` condition split across lines like this, the resulting
+# value passed to the expression evaluator contains embedded newline
+# characters inside what should be a single expression. Depending on the
+# runner/parser version this can cause the expression to be treated as an
+# opaque multi-line STRING (because newlines are not valid inside a bare
+# expression token stream the same way folded spaces are), rather than being
+# evaluated as boolean logic. A non-empty multi-line string is still
+# non-empty, so `if:` evaluates it as true regardless of the actual security
+# check it was meant to express.
+name: CFW-02 Literal Block Scalar
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    # VULNERABLE: `|` literal scalar keeps the newline between the two
+    # comparisons. This is intended to require BOTH the actor to be a
+    # maintainer AND the PR to target main, but the newline-preserving block
+    # style causes the check to degenerate into a truthy non-empty string.
+    if: |
+      ${{ github.event.pull_request.user.login == 'trusted-maintainer'
+      && github.event.pull_request.base.ref == 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Publish package with elevated credentials
+        run: npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

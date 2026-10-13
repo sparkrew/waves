@@ -1,0 +1,33 @@
+# VULNERABLE (CFW-08): Folded-scalar "manual approval label" gate on a
+# production deployment job.
+#
+# Some teams implement a lightweight manual-approval pattern by requiring a
+# specific label (e.g. "approved-for-prod") to be present on the PR before a
+# deploy job runs, layered on top of (or instead of) GitHub's native
+# environment protection rules. Here that label check is written with a
+# folded scalar and is broken the same way as the earlier examples, so the
+# "approval" gate provides no real protection -- deployment proceeds whether
+# or not the approval label was ever applied.
+name: CFW-08 Approval Label Gate Bypass
+on:
+  pull_request:
+    types: [labeled, synchronize]
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment: production
+    # VULNERABLE: folded scalar collapses the label-presence check into a
+    # non-empty string, so this job runs regardless of whether
+    # 'approved-for-prod' is actually attached to the PR.
+    if: >
+      ${{ contains(github.event.pull_request.labels.*.name,
+      'approved-for-prod') }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Deploy to production
+        run: ./deploy.sh --env=production
+        env:
+          PROD_DEPLOY_KEY: ${{ secrets.PROD_DEPLOY_KEY }}

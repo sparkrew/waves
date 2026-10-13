@@ -1,0 +1,29 @@
+name: golangci-lint
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - '*'
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: install go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8 # pin@6.1.1
+        with:
+          args: -v --timeout=5m
+          skip-build-cache: true
+          skip-pkg-cache: true

@@ -1,0 +1,41 @@
+# VULNERABLE (CFW-04): workflow_run "fork guard" collapsed by folded scalar.
+#
+# This is the highest-impact variant: `workflow_run` events run with access to
+# repository secrets and can check out artifacts produced by a prior,
+# untrusted (fork) run. The safeguard here is SUPPOSED to require that the
+# triggering run's head repository matches the base repository (i.e. it was
+# NOT triggered from a fork) before checking out code and using secrets. The
+# multi-line folded scalar breaks that guarantee.
+name: CFW-04 Workflow Run Fork Guard Bypass
+on:
+  workflow_run:
+    workflows: ["PR Build"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  run-privileged-tests:
+    runs-on: ubuntu-latest
+    # VULNERABLE: multi-line folded scalar (`>`) wrapping a fork-origin check.
+    # After YAML folding, this collapses into a string rather than being
+    # cleanly evaluated as boolean, so the "not a fork" guard is bypassed and
+    # this job runs (with secrets) even for workflow_run events that
+    # originated from a forked pull request.
+    if: >
+      ${{
+      github.event.workflow_run.head_repository.full_name ==
+      github.event.workflow_run.repository.full_name }}
+    steps:
+      - name: Download untrusted PR artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: pr-build-output
+      - name: Run tests with cloud credentials
+        run: ./run-integration-tests.sh
+        env:
+          CLOUD_API_KEY: ${{ secrets.CLOUD_API_KEY }}

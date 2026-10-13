@@ -1,0 +1,225 @@
+#
+# Copyright 2021 The Sigstore Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Verify-K8s
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-k8s-manifests:
+    name: k8s manifest check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Extract version of Go to use
+        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+        with:
+          go-version: '${{ env.GOVERSION }}'
+          check-latest: true
+
+      - name: Install kubeval
+        run: go install github.com/instrumenta/kubeval@v0.16.1
+
+      - run: kubeval config/*.yaml
+
+  verify-k8s-deployment:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Keep running if one leg fails.
+      matrix:
+        issuer:
+        - "OIDC Issuer"
+        - "Meta Issuer"
+
+        include:
+        - issuer: "OIDC Issuer"
+          issuer-config:
+            "oidc-issuers:\n      https://kubernetes.default.svc:\n        issuer-url: \"https://kubernetes.default.svc\"\n        client-id: \"sigstore\"\n        type: \"kubernetes\""
+        - issuer: "Meta Issuer"
+          issuer-config:
+            "meta-issuers:\n      https://kubernetes.*.svc: \n        client-id: \"sigstore\"\n        type: \"kubernetes\""
+    env:
+      # https://github.com/google/go-containerregistry/pull/125 allows insecure registry for
+      # '*.local' hostnames. This works both for `ko` and our own tag-to-digest resolution logic,
+      # thus allowing us to test without bypassing tag-to-digest resolution.
+      REGISTRY_NAME: registry.local
+      REGISTRY_PORT: 5000
+      KO_PREFIX: registry.local:5000/fulcio
+      GIT_HASH: ${{ github.sha }}
+      GIT_VERSION: test
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Extract version of Go to use
+        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+        with:
+          go-version: '${{ env.GOVERSION }}'
+          check-latest: true
+
+      - uses: ko-build/setup-ko@d982fec422852203cfb2053a8ec6ad302280d04d # v0.8
+
+      - name: Setup Cluster
+        uses: chainguard-dev/actions/setup-kind@29fb6e979a0b3efc79748a17e8cec08d0594cbfd # main
+        with:
+          k8s-version: 1.26.x
+          registry-authority: ${{ env.REGISTRY_NAME }}:${{ env.REGISTRY_PORT }}
+
+      - name: Generate temporary CA files
+        run: |
+          openssl req -x509 \
+              -newkey ed25519 \
+              -sha256 \
+              -keyout "${{ github.run_id }}-key.pem" \
+              -out "${{ github.run_id }}-cert.pem" \
+              -subj "/CN=ed25519" \
+              -days 36500 \
+              -passout pass:"${{ github.run_id }}"
+
+      - name: Deploy fulcio-system
+        run: |
+          # Reduce the resource requests of Fulcio
+          sed -i -e 's,memory: "1G",memory: "100Mi",g' ${{ github.workspace }}/config/deployment.yaml
+          sed -i -e 's,cpu: ".5",cpu: "50m",g' ${{ github.workspace }}/config/deployment.yaml
+          # Switch to one replica to make it easier to test the scraping of
+          # metrics since we know all the requests then go to the same server.
+          sed -i -E 's,replicas: 3,replicas: 1,g' ${{ github.workspace }}/config/deployment.yaml
+          # Expose the prometheus port as a service so tests can grab it
+          # without hitting the k8s API
+          cat <<EOF >> ${{ github.workspace }}/config/deployment.yaml
+              - name: prometheus
+                protocol: TCP
+                port: 2112
+                targetPort: 2112
+          EOF
+
+          # Overwrite the configuration to be what we need for KinD.
+          cat <<EOF > config/fulcio-config.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: fulcio-config
+            namespace: fulcio-system
+          data:
+            config.yaml: |-
+              ${{ matrix.issuer-config }}
+            server.yaml: |-
+              host: 0.0.0.0
+              port: 5555
+              grpc-port: 5554
+              ca: fileca
+              fileca-cert: /etc/fulcio-secret/cert.pem
+              fileca-key: /etc/fulcio-secret/key.pem
+              fileca-key-passwd: "${{ github.run_id }}"
+              ct-log-url: ""
+              log_type: prod
+          EOF
+          # Create secret needed to use fileca
+          cat <<EOF > config/fulcio-secret.yaml
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: fulcio-secret
+            namespace: fulcio-system
+          data:
+            cert.pem: $(cat ${{ github.run_id }}-cert.pem | base64 -w 0)
+            key.pem: $(cat ${{ github.run_id }}-key.pem | base64 -w 0)
+          EOF
+
+          make ko-apply-ci
+
+          kubectl wait --for=condition=Available --timeout=5m -n fulcio-system deployment/fulcio-server
+
+          kubectl get po -n fulcio-system
+
+      - name: Run signing job
+        run: |
+          DIGEST=$(make ko-publish | sed '1d')
+
+          cat <<EOF | kubectl apply -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: check-oidc
+          spec:
+            template:
+              spec:
+                restartPolicy: Never
+                automountServiceAccountToken: false
+                containers:
+                - name: check-oidc
+                  image: gcr.io/projectsigstore/cosign:v1.12.0
+                  args: [
+                    "sign",
+                    "--fulcio-url=http://fulcio-server.fulcio-system.svc",
+                    "--insecure-skip-verify=true",
+                    "--upload=false",
+                    "${DIGEST}",
+                  ]
+
+                  env:
+                  - name: COSIGN_EXPERIMENTAL
+                    value: "true"
+                  volumeMounts:
+                  - name: oidc-info
+                    mountPath: /var/run/sigstore/cosign
+                volumes:
+                  - name: oidc-info
+                    projected:
+                      sources:
+                        - serviceAccountToken:
+                            path: oidc-token
+                            expirationSeconds: 600 # Use as short-lived as possible.
+                            audience: sigstore
+          EOF
+
+          kubectl wait --for=condition=Complete --timeout=90s job/check-oidc
+
+      - name: Validate prometheus metrics exported and look correct
+        run: |
+          cat <<EOF | ko apply -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: check-prometheus-metrics
+          spec:
+            template:
+              spec:
+                restartPolicy: Never
+                automountServiceAccountToken: false
+                containers:
+                - name: check-metrics
+                  image: ko://github.com/sigstore/fulcio/test/prometheus/
+          EOF
+
+          kubectl wait --for=condition=Complete --timeout=90s job/check-prometheus-metrics
+        env:
+          KO_DOCKER_REPO: registry.local:5000/fulcio
+
+      - name: Collect diagnostics and upload
+        if: ${{ failure() }}
+        uses: chainguard-dev/actions/kind-diag@29fb6e979a0b3efc79748a17e8cec08d0594cbfd # main

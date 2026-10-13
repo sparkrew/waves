@@ -1,0 +1,40 @@
+# VULNERABLE (CFW-07): Folded scalar inside a matrix job's `if:`, meant to
+# restrict a specific matrix leg (the one with cloud-deploy credentials) to
+# the main branch only.
+#
+# Matrix workflows are a common place for this bug to hide because the
+# condition is easy to overlook among many strategy/matrix keys. Here the
+# `deploy` leg of the matrix should only run on `main`; the other legs
+# (`lint`, `test`) have no secrets and are harmless. The folded scalar
+# collapses the branch check, so the `deploy` leg (with cloud secrets) also
+# runs on every branch and every fork PR build matrix.
+name: CFW-07 Matrix Condition Collapse
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  ci-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: [lint, test, deploy]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        if: matrix.task == 'lint'
+        run: npm run lint
+      - name: Test
+        if: matrix.task == 'test'
+        run: npm test
+      - name: Deploy preview environment
+        # VULNERABLE: multi-line folded scalar breaks the intended
+        # "deploy leg + main branch only" restriction into a truthy string.
+        if: >
+          ${{ matrix.task == 'deploy' &&
+          github.ref == 'refs/heads/main' }}
+        run: ./scripts/deploy-preview.sh
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}

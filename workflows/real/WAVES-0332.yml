@@ -1,0 +1,17 @@
+on: [push, workflow_dispatch]
+
+jobs:
+  ocicl_job:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    name: Test and publish package
+    timeout-minutes: 40
+    steps:
+      - id: build-and-publish
+        uses: ocicl/ocicl-action@main
+        with:
+          gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+          gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
+          dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          llm_api_key: ${{ secrets.LLM_API_KEY }}

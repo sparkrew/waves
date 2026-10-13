@@ -1,0 +1,34 @@
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    # Check for updates every 6 hours
+    - cron: '0 */6 * * *'
+
+jobs:
+  ocicl_job:
+    permissions:
+      issues: write
+      packages: write
+      contents: write
+    runs-on: ubuntu-latest
+    name: Test and publish package
+    timeout-minutes: 40
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for upstream updates
+        id: update-check
+        uses: ocicl/ocicl-action/update-check@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: build-and-publish
+        if: steps.update-check.outputs.updated == 'true'
+        uses: ocicl/ocicl-action@main
+        with:
+          gpg_signing_key: ${{ secrets.GPG_SIGNING_KEY }}
+          gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
+          dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          llm_api_key: ${{ secrets.LLM_API_KEY }}

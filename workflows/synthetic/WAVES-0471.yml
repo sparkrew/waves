@@ -1,0 +1,33 @@
+# VULNERABLE (CFW-06): Step-level (not job-level) folded-scalar condition.
+#
+# CFW isn't limited to job-level `if:` — the same bug applies at the step
+# level. Here a "debug mode" step that echoes sensitive environment values is
+# meant to run ONLY when the repository owner has manually set a
+# `debug_enabled` repository variable to true. The multi-line folded
+# condition collapses the check, so the debug step (and its secret exposure
+# in logs) always executes, including on every contributor's fork PR.
+name: CFW-06 Step Level Debug Gate
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: npm run build
+      - name: Dump debug environment (maintainers only)
+        # VULNERABLE: folded scalar splits the `${{ }}` boundary the same way
+        # as CFW-01, so this "maintainers only" debug step actually runs on
+        # every PR, printing internal environment values to the public log.
+        if: >
+          ${{ vars.DEBUG_ENABLED == 'true' &&
+          github.actor == 'release-manager' }}
+        run: |
+          echo "INTERNAL_API_BASE=$INTERNAL_API_BASE"
+          echo "BUILD_CACHE_TOKEN=$BUILD_CACHE_TOKEN"
+        env:
+          INTERNAL_API_BASE: ${{ vars.INTERNAL_API_BASE }}
+          BUILD_CACHE_TOKEN: ${{ secrets.BUILD_CACHE_TOKEN }}

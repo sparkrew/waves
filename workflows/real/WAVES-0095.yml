@@ -1,0 +1,15 @@
+name: golangci-lint
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  golangci_lint_workflow:
+    uses: turbot/steampipe-workflows/.github/workflows/golangci-lint.yml@main

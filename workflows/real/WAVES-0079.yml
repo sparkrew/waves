@@ -1,0 +1,39 @@
+name: Continuous integration
+
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Install protoc
+      run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+    - uses: actions/checkout@v4
+    - run: rustup toolchain install $(cat rust-toolchain) --profile minimal --component clippy
+    - run: rustup toolchain install nightly --profile minimal --component rustfmt
+    - run: shellcheck **/*.sh
+    - name: Environment
+      run: rustup --version && cargo --version
+    - name: Build
+      run: cargo build
+    - name: Format
+      run: cargo +nightly fmt -- --check
+    - name: Clippy
+      run: cargo clippy --all-targets -- -D warnings
+    - name: Clippy (generic UDP)
+      run: cargo clippy --no-default-features -- -D warnings
+    - name: Clippy (fuzz targets)
+      # Use the latest compiler for this; without a lockfile,
+      # the Minimum Supported Rust Version of dependencies might be higher.
+      run: cargo +stable clippy --all-targets -- -D warnings
+      working-directory: backend/fuzz
+      env:
+        RUSTFLAGS: --cfg fuzzing
+    - name: Quick tests
+      run: cargo test
+    - name: Dynamic Config tests
+      run: cargo test -p calling_common dynamic_config --features=dynamic_config

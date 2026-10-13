@@ -1,0 +1,92 @@
+name: Numpy User DTypes CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install build and test dependencies
+        run: |
+          python -m pip install -U pip build pytest unyt wheel meson ninja meson-python patchelf pandas numpy
+      - name: Install asciidtype
+        working-directory: asciidtype
+        run: |
+          CFLAGS="-Werror" python -m pip install . --no-build-isolation
+      - name: Run asciidtype tests
+        working-directory: asciidtype
+        run: |
+          pytest -vvv --color=yes
+      - name: Install metadatadtype
+        working-directory: metadatadtype
+        run: |
+          python -m build --no-isolation --wheel -Cbuilddir=build
+          find ./dist/*.whl | xargs python -m pip install
+      - name: Run metadatadtype tests
+        working-directory: metadatadtype
+        run: |
+          pytest -vvv --color=yes
+      - name: install mpfdtype
+        working-directory: mpfdtype
+        run: |
+          sudo apt install libmpfr-dev -y
+          CFLAGS="-Werror" python -m pip install . --no-build-isolation
+      - name: Run mpfdtype tests
+        working-directory: mpfdtype
+        run: |
+          pytest -vvv --color=yes
+      - name: Install unytdtype
+        working-directory: unytdtype
+        run: |
+          python -m build --no-isolation --wheel -Cbuilddir=build
+          find ./dist/*.whl | xargs python -m pip install
+      - name: Run unytdtype tests
+        working-directory: unytdtype
+        run: |
+          pytest -vvv --color=yes
+      - name: Install quaddtype dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmpfr-dev libssl-dev libfftw3-dev
+      - name: Install SLEEF
+        run: |
+          git clone https://github.com/shibatch/sleef.git
+          cd sleef
+          cmake -S . -B build -DSLEEF_BUILD_QUAD:BOOL=ON -DSLEEF_BUILD_SHARED_LIBS:BOOL=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+          cmake --build build/ --clean-first -j
+          sudo cmake --install build --prefix /usr
+      - name: Install quaddtype
+        working-directory: quaddtype
+        run: |
+          LDFLAGS="-Wl,-rpath,/usr/lib" python -m pip install . -v --no-build-isolation -Cbuilddir=build -C'compile-args=-v' -Csetup-args="-Dbuildtype=debug"
+      - name: Run quaddtype tests
+        working-directory: quaddtype
+        run: |
+          pytest -vvv --color=yes
+      - name: Install stringdtype
+        working-directory: stringdtype
+        run: |
+          if [ -d "build/" ]
+          then
+              rm -r build
+          fi
+          meson setup build
+          python -m build --no-isolation --wheel -Cbuilddir=build --config-setting='compile-args=-v' -Csetup-args="-Dbuildtype=debug"
+          find ./dist/*.whl | xargs python -m pip install
+      - name: Run stringdtype tests
+        working-directory: stringdtype
+        run: |
+          pytest -s -vvv --color=yes
+          pip uninstall -y pandas
+          pytest -s -vvv --color=yes

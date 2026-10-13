@@ -1,0 +1,24 @@
+name: Dependabot PR
+
+on:
+  # https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
+  pull_request_target:
+    branches:
+      - '**'
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+
+jobs:
+  hcp-terraform:
+    if: github.actor == 'dependabot[bot]'
+    uses: ./.github/workflows/end-to-end-tfc.yaml
+  hcp-terraform-helm:
+    if: github.actor == 'dependabot[bot]'
+    uses: ./.github/workflows/helm-end-to-end-tfc.yaml
+  terraform-enterprise:
+    if: github.actor == 'dependabot[bot]'
+    uses: ./.github/workflows/end-to-end-tfe.yaml
+  terraform-enterprise-helm:
+    if: github.actor == 'dependabot[bot]'
+    uses: ./.github/workflows/helm-end-to-end-tfe.yaml

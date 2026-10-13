@@ -1,0 +1,48 @@
+# VULNERABLE (CFW-01): Classic folded-scalar split of the ${{ }} expression boundary.
+#
+# The condition is written with `>` (folded scalar). The opening `${{` sits on
+# the first line while the closing `}}` sits on a later line. YAML folds the
+# block into a single string BEFORE the Actions expression parser ever sees
+# it, so what actually reaches the `if:` evaluator is the *literal text*:
+#
+#   ${{ github.event.workflow_run.event == 'pull_request' &&  github.event.workflow_run.conclusion == 'success' }}
+#
+# On the surface that looks fine and *would* parse as one expression — but the
+# vulnerability in real-world instances of this pattern (see
+# EbookFoundation/free-programming-books) is that the folded scalar hides the
+# fact that the expression is fragile to further edits: any future line-based
+# diff/lint tool, or a slightly different fold indicator (e.g. `>-` used
+# elsewhere in the same file), that trims/duplicates a line silently breaks
+# the single expression into a value GitHub Actions treats as a plain string.
+# Once the boolean got downgraded to a string like "true" or "false" (both
+# non-empty), `if:` treats it as truthy regardless of which branch it is,
+# and the deploy step always runs.
+#
+# This file intentionally reproduces the exact vulnerable shape reported in
+# the wild: the condition below is ALREADY in the broken state (result is a
+# string, not a boolean), so deploy-to-prod runs unconditionally.
+name: CFW-01 Classic Folded Scalar
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  deploy-to-prod:
+    runs-on: ubuntu-latest
+    # VULNERABLE: multi-line folded scalar. GitHub Actions receives this whole
+    # block as ONE string value (folded to a single line by YAML) rather than
+    # as a boolean expression result, because the surrounding literal text is
+    # not confined to being purely `${{ <expr> }}` once folded/edited over
+    # time. Any non-empty result (including the literal word "false") is
+    # truthy, so this job runs on every completed workflow_run event —
+    # including runs triggered from forked pull requests.
+    if: >
+      ${{ github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Deploy to production
+        run: echo "Deploying to production with access to secrets..."
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}

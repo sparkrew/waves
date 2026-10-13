@@ -1,0 +1,116 @@
+on:
+  release:
+    types:
+      - published
+      - unpublished
+      - created
+      - edited
+      - deleted
+      - prereleased
+      - released
+  pull_request:
+    types:
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
+      - converted_to_draft
+      - ready_for_review
+      - locked
+      - unlocked
+      - review_requested
+      - review_request_removed
+      - auto_merge_enabled
+      - auto_merge_disabled
+  pull_request_target:
+    types:
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
+      - converted_to_draft
+      - ready_for_review
+      - locked
+      - unlocked
+      - review_requested
+      - review_request_removed
+      - auto_merge_enabled
+      - auto_merge_disabled
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  pull_request_review_comment:
+    types:
+      - created
+      - edited
+      - deleted
+  issue_comment:
+    types:
+      - created
+      - edited
+      - deleted
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Release version (MUST NOT contain `SNAPSHOT`!)"
+        required: true
+        type: string
+        options:
+          - "2.8.0" # NEXT_RELEASE_MINOR
+          - "2.7.13" # NEXT_RELEASE_PATCH
+          - "2.7.12.1" # NEXT_RELEASE_HOTFIX
+        default: "2.7.12.45" # NEXT_RELEASE_DEFAULT
+      next_snapshot_version:
+        description: "Next snapshot version to set after successful release (MUST end with `-SNAPSHOT`!)"
+        default: "2.7.14-SNAPSHOT" # NEXT_SNAPSHOT_DEFAULT
+        required: true
+        type: string
+      base_branch:
+        description: "Base branch to merge release into"
+        default: "main"
+        required: true
+        type: string
+      initial_rev:
+        description: |
+          Revision to release from; must belong to history of above 'base_branch'.
+          Defaults to its head.
+          Use only for special 'cherry-pick' releases.
+        default: ""
+        type: string
+
+name: many
+run-name: "on ${{ github.event_name }}: ${{ github.event.action }}"
+
+jobs:
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: env
+        run: env | sort
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
+      - name: ls remote
+        run: |
+          git ls-remote origin
+

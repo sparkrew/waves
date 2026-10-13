@@ -1,0 +1,43 @@
+# VULNERABLE + FIXED CONTRASTIVE PAIR (CFW-10)
+#
+# This file intentionally contains TWO jobs guarding an equivalent sensitive
+# action with the SAME logical condition, written two different ways:
+#
+#   - `deploy-vulnerable`: multi-line folded scalar (`>`) spanning the
+#     `${{ }}` delimiters -> CFW present, condition collapses to a truthy
+#     string, job always runs.
+#   - `deploy-fixed`: the exact same boolean logic, but written as a single
+#     line fully inside `${{ }}` -> evaluates correctly as boolean, job only
+#     runs when the check is genuinely true.
+#
+# Useful as a benchmark pair for detectors: the correct classifier should
+# flag `deploy-vulnerable` and correctly leave `deploy-fixed` unflagged, even
+# though both express identical intended security logic.
+name: CFW-10 Contrastive Vulnerable-vs-Fixed Pair
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types: [completed]
+
+jobs:
+  deploy-vulnerable:
+    runs-on: ubuntu-latest
+    # VULNERABLE: folded scalar splits the expression boundary across lines.
+    if: >
+      ${{ github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Deploy (vulnerable gate)
+        run: ./deploy.sh
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+
+  deploy-fixed:
+    runs-on: ubuntu-latest
+    # SAFE: identical logic, single line, fully enclosed in ${{ }}.
+    if: ${{ github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Deploy (correct gate)
+        run: ./deploy.sh
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}

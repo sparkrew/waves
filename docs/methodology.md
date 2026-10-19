@@ -47,10 +47,38 @@ Workflows whose candidates were all rejected are retained as confirmed all-negat
 ## Synthetic CFW workflows
 
 No CFW instance occurs in the real-world workflows. To let scanners be evaluated on all ten categories, ten synthetic
-workflows each containing a manually confirmed CFW instance were added. An LLM (Anthropic Claude Sonnet 5) generated
-candidate workflows, not their labels; each was reviewed against the CFW criterion before being retained. They come from
-`sparkrew/cfw-benchmark` at commit `8197fa5a873094fd584ebc82cfdae78c81a6d2e9` and are flagged `source_type = synthetic`.
-They characterize detection ability for CFW and say nothing about CFW prevalence.
+workflows each containing a manually confirmed CFW instance were added. They come from `sparkrew/cfw-benchmark` at commit
+`8197fa5a873094fd584ebc82cfdae78c81a6d2e9` and are flagged `source_type = synthetic`. They characterize detection ability
+for CFW and say nothing about CFW prevalence.
+
+### How they were created
+
+- **Model and date.** The workflows were generated with Anthropic Claude Sonnet 5 on 2026-09-05 (the benchmark commit
+  is dated 2026-09-06, which is the `retrieval_date` of these workflows).
+- **Role of the model.** The model proposed the workflows. Each workflow was reviewed manually against the CFW criterion
+  of the [annotation guide](annotation_guide.md#check-6-control-flow-weakness-cfw), and the label in `labels.csv` points
+  to the `if:` line that carries the weakness. The generation also produced a `labels.json` in `sparkrew/cfw-benchmark`
+  that records the model's intended vulnerable location for each file. It is not part of WAVES.
+- **Context given to the model.** The request was made in a conversation that started with the definition of CFW from
+  Fares et al., including the folded-scalar example from `EbookFoundation/free-programming-books`. The model was then asked
+  to check a few real workflows for CFW before the generation request.
+- **Generation request** (edited for spelling and punctuation only):
+
+  > I am creating a benchmark of vulnerable GitHub Actions workflows and I need 10 workflows that contain a CFW
+  > (Control Flow Weakness) vulnerability. Please create them. I also want to publish them on GitHub, so structure the
+  > repository and tell me what to do.
+
+  The request contains no further specification. The variants were chosen by the model, with ten workflows requested and
+  ten retained. The manual review is therefore what establishes that each file matches the criterion.
+- **Patterns.** The file names in `workflows/synthetic/` describe the intended shape of each case: a classic folded
+  scalar, a literal block scalar, a partially wrapped expression, a `workflow_run` fork check, a reusable-workflow gate,
+  a step-level debug gate, a matrix condition, an approval-gate bypass, a release-branch gate, and a contrastive pair.
+- **Content of the files.** Each file carries a header comment (`# VULNERABLE (CFW-nn): ...`) that names the weakness
+  and explains it. The snapshots are kept exactly as committed. Scanners that read comments, for example LLM-based ones,
+  therefore see the explanation, which static rule-based scanners do not use.
+
+Because the cases were written to exhibit CFW, a scanner's result on them measures whether it detects these constructions,
+not how it behaves on workflows found in the wild.
 
 ## Counting conventions
 

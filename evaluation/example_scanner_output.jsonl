@@ -1,0 +1,5 @@
+{"workflow_id": "WAVES-0001", "weakness_id": "EPW", "line_number": 1, "rule": "excessive-permissions", "message": "No permissions block declared"}
+{"workflow_id": "WAVES-0001", "weakness_id": "UDW", "line_number": 12, "rule": "pinned-actions", "message": "Action is not pinned to a commit SHA"}
+{"workflow_id": "WAVES-0001", "weakness_id": "HGW", "line_number": 1, "rule": "hardening-gap", "message": "Example finding that is not in the labels"}
+{"workflow_id": "WAVES-0466", "weakness_id": "CFW", "line_number": 41, "rule": "if-always-true", "message": "Condition is always true"}
+{"workflow_id": "WAVES-0002", "weakness_id": null, "line_number": 3, "rule": "style", "message": "Finding that maps to no WAVES category"}

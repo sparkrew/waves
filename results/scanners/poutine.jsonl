@@ -1,0 +1,112 @@
+{"workflow_id": "WAVES-0005", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0258", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0259", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0050", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0068", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0069", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0436", "weakness_id": "AIW", "line_number": 68, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0436", "weakness_id": "AIW", "line_number": 74, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0436", "weakness_id": "IW", "line_number": 102, "rule": "injection", "message": "Sources: github.event.pull_request.head.ref"}
+{"workflow_id": "WAVES-0436", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0090", "weakness_id": "AIW", "line_number": 68, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0090", "weakness_id": "AIW", "line_number": 74, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0090", "weakness_id": "IW", "line_number": 102, "rule": "injection", "message": "Sources: github.event.pull_request.head.ref"}
+{"workflow_id": "WAVES-0090", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0091", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0102", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0110", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0111", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0123", "weakness_id": "IW", "line_number": 71, "rule": "injection", "message": "Sources: github.head_ref"}
+{"workflow_id": "WAVES-0123", "weakness_id": "IW", "line_number": 75, "rule": "injection", "message": "Sources: github.head_ref"}
+{"workflow_id": "WAVES-0124", "weakness_id": "IW", "line_number": 71, "rule": "injection", "message": "Sources: github.head_ref"}
+{"workflow_id": "WAVES-0124", "weakness_id": "IW", "line_number": 75, "rule": "injection", "message": "Sources: github.head_ref"}
+{"workflow_id": "WAVES-0137", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0145", "weakness_id": "IW", "line_number": 91, "rule": "injection", "message": "Sources: github.event.inputs.version"}
+{"workflow_id": "WAVES-0161", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0174", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0179", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0194", "weakness_id": "IW", "line_number": 30, "rule": "injection", "message": "Sources: github.event.inputs.channel-promotion"}
+{"workflow_id": "WAVES-0254", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0253", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0255", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0284", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0286", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0288", "weakness_id": "IW", "line_number": 54, "rule": "injection", "message": "Sources: github.head_ref"}
+{"workflow_id": "WAVES-0347", "weakness_id": "IW", "line_number": 79, "rule": "injection", "message": "Sources: github.event.inputs.platforms"}
+{"workflow_id": "WAVES-0353", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0354", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0354", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0355", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0356", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0356", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0357", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0358", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0358", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0359", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0360", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0361", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0362", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0363", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0363", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0364", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0365", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0366", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0367", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0367", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0368", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0368", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0369", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0369", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0370", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0371", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0372", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0373", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0374", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0375", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0376", "weakness_id": "AIW", "line_number": 20, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bundler`"}
+{"workflow_id": "WAVES-0376", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0378", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0379", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0380", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0382", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0383", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0384", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0385", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0389", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0390", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0391", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 58, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 66, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 75, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 60, "rule": "untrusted_checkout_exec", "message": "Detected usage of a Local GitHub Action at path: `./.github/actions/download-provider`"}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 62, "rule": "untrusted_checkout_exec", "message": "Detected usage of a Local GitHub Action at path: `./.github/actions/download-sdk`"}
+{"workflow_id": "WAVES-0394", "weakness_id": "AIW", "line_number": 54, "rule": "untrusted_checkout_exec", "message": "Detected usage of a Local GitHub Action at path: `./.github/actions/setup-tools`"}
+{"workflow_id": "WAVES-0395", "weakness_id": "AIW", "line_number": 62, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0395", "weakness_id": "AIW", "line_number": 82, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0395", "weakness_id": "AIW", "line_number": 91, "rule": "untrusted_checkout_exec", "message": "Detected usage of `make`"}
+{"workflow_id": "WAVES-0395", "weakness_id": "AIW", "line_number": 66, "rule": "untrusted_checkout_exec", "message": "Detected usage of a Local GitHub Action at path: `./.github/actions/download-provider`"}
+{"workflow_id": "WAVES-0395", "weakness_id": "AIW", "line_number": 78, "rule": "untrusted_checkout_exec", "message": "Detected usage of a Local GitHub Action at path: `./.github/actions/download-sdk`"}
+{"workflow_id": "WAVES-0396", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0405", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0404", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0408", "weakness_id": "KVCW", "line_number": 104, "rule": "known_vulnerability_in_build_component", "message": "Package: actions/download-artifact"}
+{"workflow_id": "WAVES-0433", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0440", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0453", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0454", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0455", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0456", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0466", "weakness_id": "CFW", "line_number": 41, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0467", "weakness_id": "CFW", "line_number": 25, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0467", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0468", "weakness_id": "CFW", "line_number": 26, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0469", "weakness_id": "KVCW", "line_number": 33, "rule": "known_vulnerability_in_build_component", "message": "Package: actions/download-artifact"}
+{"workflow_id": "WAVES-0469", "weakness_id": "CFW", "line_number": 27, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0470", "weakness_id": "CFW", "line_number": 23, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0471", "weakness_id": "CFW", "line_number": 25, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0472", "weakness_id": "CFW", "line_number": 35, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0473", "weakness_id": "CFW", "line_number": 23, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0474", "weakness_id": "AIW", "line_number": 31, "rule": "untrusted_checkout_exec", "message": "Detected usage of `bash`"}
+{"workflow_id": "WAVES-0474", "weakness_id": "CFW", "line_number": 22, "rule": "if_always_true", "message": ""}
+{"workflow_id": "WAVES-0474", "weakness_id": "EPW", "line_number": null, "rule": "default_permissions_on_risky_events", "message": ""}
+{"workflow_id": "WAVES-0475", "weakness_id": "CFW", "line_number": 26, "rule": "if_always_true", "message": ""}

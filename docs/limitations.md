@@ -37,5 +37,5 @@ workflow references are not counted.
 deleted, which is why snapshots are included. GitHub Actions evolves, so some weaknesses (for example deprecated
 runtimes) may disappear over time.
 
-**Competing interest.** The initial corpus was collected by Boost Security, which also develops the Poutine scanner;
+**Competing interest.** The initial corpus was collected by our industry partner, which also develops the Poutine scanner;
 see [`ethics_and_disclosure.md`](ethics_and_disclosure.md).

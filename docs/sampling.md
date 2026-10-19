@@ -1,7 +1,7 @@
 # Sampling and Workflow Metrics
 
 > **Provenance only.** The workflows were sampled from a proprietary corpus of 1,048,857 public GitHub Actions
-> workflows maintained by Boost Security. That corpus is not published and we are only allowed to release our samples.
+> workflows maintained by our industry partner. That corpus is not published and we are only allowed to release our samples.
 > The sampling scripts in [`scripts/sampling/`](../scripts/sampling) therefore document the procedure but cannot be re-run
 > from this repository. Everything downstream of the sample (metrics, labels, figures) is reproducible: see
 > [`reproduction/README.md`](../reproduction/README.md).

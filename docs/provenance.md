@@ -4,9 +4,9 @@
 
 | Item | Origin |
 |---|---|
-| Corpus | Proprietary corpus of 1,048,857 public GitHub Actions workflows maintained by Boost Security (not released). Only the sampled workflows are published, with their repository, path and commit. |
+| Corpus | Proprietary corpus of 1,048,857 public GitHub Actions workflows maintained by our industry partner (not released). Only the sampled workflows are published, with their repository, path and commit. |
 | Real-world workflows (465) | Sampled from that corpus (see [sampling.md](sampling.md)); file contents retrieved at the recorded commit, retrieval date 2026-06-10. |
-| Synthetic workflows (10) | `sparkrew/cfw-benchmark` at commit `8197fa5a873094fd584ebc82cfdae78c81a6d2e9`, generated with an LLM and manually reviewed. `retrieval_date` is that commit's date. |
+| Synthetic workflows (10) | [`cfw-benchmark`](https://anonymous.4open.science/r/cfw-benchmark/) at commit `8197fa5a873094fd584ebc82cfdae78c81a6d2e9` (anonymized mirror), generated with an LLM and manually reviewed. `retrieval_date` is that commit's date. |
 | Reference labels (445) | Two annotators, cross-labeling and adjudication on 100 workflows. |
 | Helper candidates (2,136) | Output of the labeling helpers on 365 workflows; every candidate manually reviewed. |
 | KVCW inventory, GRCW baseline | GitHub security advisories and runtime-deprecation notices; see `data/inventories/sources.csv`. |

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scanner_output.schema.json",
+  "title": "WAVES scanner output record",
+  "description": "One finding reported by a scanner on a WAVES workflow, normalized to a WAVES weakness category. Files are JSON Lines: one record per line.",
+  "type": "object",
+  "required": ["workflow_id", "weakness_id"],
+  "additionalProperties": true,
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "pattern": "^WAVES-[0-9]{4}$",
+      "description": "Key into data/workflows.csv"
+    },
+    "weakness_id": {
+      "description": "WAVES category, or null if the finding maps to no category (counted as unmatched)",
+      "enum": ["AIW", "CFW", "EPW", "GRCW", "HGW", "IW", "KVCW", "PTW", "SEW", "UDW", null]
+    },
+    "line_number": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "1-based line of the finding in the snapshot; needed for site-level matching"
+    },
+    "rule": {
+      "type": "string",
+      "description": "Scanner-native rule identifier (informational)"
+    },
+    "message": {
+      "type": "string",
+      "description": "Scanner message (informational)"
+    }
+  }
+}

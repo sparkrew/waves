@@ -2,7 +2,7 @@
 
 ## Competing interests
 
-The initial corpus was collected by Boost Security, which also develops Poutine, one of the scanners this benchmark is
+The initial corpus was collected by our industry partner, which also develops Poutine, one of the scanners this benchmark is
 intended to evaluate; Poutine findings are stored alongside the corpus. The reference labels were produced from the
 workflow sources and the labeling guide: Poutine findings did not determine any label. The planned evaluation of
 Poutine against this reference set is subject to this competing interest and will be reported as such.

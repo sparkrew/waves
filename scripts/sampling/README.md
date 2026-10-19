@@ -1,7 +1,7 @@
 # Sampling scripts (provenance only)
 
 These files document how the 500 candidate workflows were selected. **They cannot be run from this repository.**
-They need the proprietary Boost Security corpus of 1,048,857 workflows (BigQuery tables), which we are not allowed to
+They need the proprietary corpus of our industry partner of 1,048,857 workflows (BigQuery tables), which we are not allowed to
 publish. Only the resulting sample is released: see [`data/workflows.csv`](../../data/workflows.csv).
 
 | File | Role |

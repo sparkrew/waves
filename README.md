@@ -8,7 +8,7 @@ the ten-weakness classification of [Fares et al.](https://arxiv.org/abs/2601.144
 PTW, SEW, UDW). Labels are multi-label and evidence-linked: **2,424 weakness instances** over 467 workflows, and 8
 confirmed all-negative workflows. It is meant to compare workflow security scanners on a common ground truth.
 
-The collection was built in collaboration with Boost Security, which maintains the corpus the workflows were sampled from
+The collection was built in collaboration with an industry partner, which maintains the corpus the workflows were sampled from
 and also develops the Poutine scanner (a competing interest, see the ethics document). The corpus itself (1,048,857
 workflows) is proprietary and is **not** part of this repository; only our sample is released.
 

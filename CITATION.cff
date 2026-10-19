@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use WAVES, please cite it as below."
+title: "WAVES: A Ground-Truth Dataset of Security Weaknesses in GitHub Actions Workflows"
+type: dataset
+version: 0.1.0
+date-released: 2026-10-12
+license: CC-BY-4.0
+# TODO (after the anonymous review): add repository-code and the real author list and affiliations.
+authors:
+  - family-names: "<AUTHOR>"
+    given-names: "<AUTHOR>"
+abstract: >-
+  WAVES is a ground-truth dataset of security weaknesses in GitHub Actions
+  workflows: 475 workflows (465 real-world, 10 synthetic) manually labeled
+  against the ten-weakness classification of Fares et al. with evidence-linked,
+  multi-label annotations.
+keywords:
+  - GitHub Actions
+  - software supply chain security
+  - ground truth
+  - benchmark

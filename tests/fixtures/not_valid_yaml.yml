@@ -1,0 +1,8 @@
+name: broken
+on: [push
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v4
+      - uses: third/party@0123456789abcdef0123456789abcdef01234567
+      - run: echo "${{ github.event.issue.title }}"

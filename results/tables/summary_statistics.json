@@ -1,0 +1,27 @@
+{
+  "workflows": 475,
+  "with_labels": 467,
+  "all_negative": 8,
+  "labels": 2424,
+  "mean_labels_per_workflow": 5.1,
+  "median": 4.0,
+  "q1": 2.0,
+  "q3": 7.0,
+  "max": 27,
+  "multi_category_workflows": 390,
+  "mean_categories_per_labeled_workflow": 2.81,
+  "labels_by_weakness": {
+    "UDW": 1062,
+    "EPW": 383,
+    "GRCW": 312,
+    "SEW": 261,
+    "HGW": 138,
+    "KVCW": 108,
+    "PTW": 74,
+    "IW": 57,
+    "AIW": 19,
+    "CFW": 10
+  },
+  "helper_candidates": 2136,
+  "helper_retained": 1969
+}

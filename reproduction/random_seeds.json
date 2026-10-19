@@ -1,0 +1,4 @@
+{
+  "sampling_seed": 42,
+  "note": "The only randomized step is the stratified sampling in scripts/sampling/sample_workflows.py (--seed, default 42), which needs the proprietary corpus and is not re-run here. Metrics, figures, tables and checks are deterministic."
+}
